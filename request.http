@@ -1,0 +1,30 @@
+GET http://localhost:3000/menu_items
+
+###
+GET http://localhost:3000/categories
+
+###
+GET http://localhost:3000/sub_categories
+
+###
+POST http://localhost:3000/menu_items
+Content-Type: application/json
+
+{
+  "name": "Menu one",
+  "price": 12.33,
+  "description": "menu one description",
+  "ingredients": "menu one ingredients",
+  "img_url": "http://google.com"
+}
+
+###
+DELETE http://localhost:3000/menu_items/fd71b421-fa94-452d-8199-25ee51b559e7
+
+###
+PATCH http://localhost:3000/menu_items/b45c86f6-d2dc-4956-9d01-5853fceb2854
+Content-Type: application/json
+
+{
+  "name": "Menu Two"
+}

@@ -11,6 +11,7 @@ VALUES ($1, $2, $3, $4, NOW() AT TIME ZONE 'utc', NOW() AT TIME ZONE 'utc', NULL
 RETURNING *;
 
 -- name: DeleteSubCategory :one
-DELETE FROM menu_sub_categories
+UPDATE menu_sub_categories
+SET deleted_at = NOW()
 WHERE id = $1
 RETURNING *;

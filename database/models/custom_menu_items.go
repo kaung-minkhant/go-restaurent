@@ -19,31 +19,48 @@ type UpdateMenuItemParams struct {
 	SubCategory *uuid.NullUUID `json:"sub_category"`
 }
 
-func (q *Queries) UpdateMenuItem(ctx context.Context, id uuid.UUID, params UpdateMenuItemParams) {
+func (q *Queries) UpdateMenuItem(ctx context.Context, id uuid.UUID, params UpdateMenuItemParams) (MenuItem, error) {
 	updateQuery := "UPDATE menu_items SET "
 	queries := make([]string, 0)
 	if params.Name != nil {
-		queries = append(queries, "name="+*params.Name)
+		queries = append(queries, fmt.Sprintf("name='%v'", *params.Name))
 	}
 	if params.Price != nil {
-		queries = append(queries, "price="+strconv.FormatFloat(float64(*params.Price), 'g', -1, 32))
+		queries = append(queries, fmt.Sprintf("price='%v'", strconv.FormatFloat(float64(*params.Price), 'g', -1, 32)))
 	}
 	if params.Description != nil {
-		queries = append(queries, "description="+*params.Description)
+		queries = append(queries, fmt.Sprintf("description='%v'", *params.Description))
 	}
 	if params.Ingredients != nil {
-		queries = append(queries, "ingredients="+*params.Ingredients)
+		queries = append(queries, fmt.Sprintf("ingredients='%v'", *params.Ingredients))
 	}
 	if params.ImgUrl != nil {
-		queries = append(queries, "image_url="+*params.ImgUrl)
+		queries = append(queries, fmt.Sprintf("img_url='%v'", *params.ImgUrl))
 	}
 	if params.Category != nil {
-		queries = append(queries, "category="+(*params.Category).UUID.String())
+		queries = append(queries, fmt.Sprintf("category='%v'", *params.Category))
 	}
 	if params.SubCategory != nil {
-		queries = append(queries, "sub_category="+(*params.SubCategory).UUID.String())
+		queries = append(queries, fmt.Sprintf("sub_category='%v'", *params.SubCategory))
 	}
 	updateQuery += strings.Join(queries, ",")
-	updateQuery += " WHERE id = " + id.String()
+	updateQuery += fmt.Sprintf(" WHERE id='%v'", id)
+	updateQuery += " RETURNING *;"
 	fmt.Println("Update menu item query", updateQuery)
+	row := q.db.QueryRowContext(ctx, updateQuery)
+	var i MenuItem
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Price,
+		&i.Description,
+		&i.Ingredients,
+		&i.ImgUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Category,
+		&i.SubCategory,
+	)
+	return i, err
 }

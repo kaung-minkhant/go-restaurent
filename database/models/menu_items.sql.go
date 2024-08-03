@@ -57,7 +57,8 @@ func (q *Queries) CreateMenuItem(ctx context.Context, arg CreateMenuItemParams) 
 }
 
 const deleteMenuItem = `-- name: DeleteMenuItem :one
-DELETE FROM menu_items
+UPDATE menu_items
+SET deleted_at = NOW()
 WHERE id = $1
 RETURNING id, name, price, description, ingredients, img_url, created_at, updated_at, deleted_at, category, sub_category
 `
@@ -127,6 +128,31 @@ WHERE id = $1
 
 func (q *Queries) GetMenuItemById(ctx context.Context, id uuid.UUID) (MenuItem, error) {
 	row := q.db.QueryRowContext(ctx, getMenuItemById, id)
+	var i MenuItem
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Price,
+		&i.Description,
+		&i.Ingredients,
+		&i.ImgUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Category,
+		&i.SubCategory,
+	)
+	return i, err
+}
+
+const hardDeleteMenuItem = `-- name: HardDeleteMenuItem :one
+DELETE FROM menu_items
+WHERE id = $1
+RETURNING id, name, price, description, ingredients, img_url, created_at, updated_at, deleted_at, category, sub_category
+`
+
+func (q *Queries) HardDeleteMenuItem(ctx context.Context, id uuid.UUID) (MenuItem, error) {
+	row := q.db.QueryRowContext(ctx, hardDeleteMenuItem, id)
 	var i MenuItem
 	err := row.Scan(
 		&i.ID,

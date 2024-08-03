@@ -11,6 +11,13 @@ VALUES ($1, $2, $3, $4, $5, $6, NOW() AT TIME ZONE 'utc', NOW() AT TIME ZONE 'ut
 RETURNING *;
 
 -- name: DeleteMenuItem :one
+UPDATE menu_items
+SET deleted_at = NOW()
+WHERE id = $1
+RETURNING *;
+
+
+-- name: HardDeleteMenuItem :one
 DELETE FROM menu_items
 WHERE id = $1
 RETURNING *;

@@ -38,7 +38,8 @@ func (q *Queries) CreateCategory(ctx context.Context, arg CreateCategoryParams) 
 }
 
 const deleteCategory = `-- name: DeleteCategory :one
-DELETE FROM menu_categories
+UPDATE menu_categories
+SET deleted_at = NOW()
 WHERE id = $1
 RETURNING id, name, img_url, created_at, updated_at, deleted_at
 `
