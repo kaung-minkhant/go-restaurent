@@ -1,0 +1,7 @@
+POST http://localhost:3000/roles
+Content-Type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6InNodW5ubm4iLCJlbXBsb3llZV9yb2xlIjoiYWRtaW4iLCJpc3MiOiJHbyBSZXN0YXVyZW50Iiwic3ViIjoiand0IiwiYXVkIjpbImFkbWluIiwidXNlciJdLCJleHAiOjE3MjI3OTI3NzgsImlhdCI6MTcyMjcwNjM3OH0.8E0AteIfSgOpvjSmMPfWTn9b0uSBNCRC84X3HBFSHVM
+
+{
+  "role_id": "manager"
+}

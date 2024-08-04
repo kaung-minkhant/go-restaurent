@@ -1,0 +1,31 @@
+### create admin
+POST http://localhost:3000/auth/admin/signup
+Content-Type: application/json
+
+{
+  "name": "james",
+  "password": "shunn",
+  "employee_id": "shunnnn",
+  "role_id": "admin"
+}
+
+### create others
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6InNodW5ubm4iLCJlbXBsb3llZV9yb2xlIjoiYWRtaW4iLCJpc3MiOiJHbyBSZXN0YXVyZW50Iiwic3ViIjoiand0IiwiYXVkIjpbImFkbWluIiwidXNlciJdLCJleHAiOjE3MjI3OTI3NzgsImlhdCI6MTcyMjcwNjM3OH0.8E0AteIfSgOpvjSmMPfWTn9b0uSBNCRC84X3HBFSHVM
+
+{
+  "name": "shunn",
+  "password": "shunn",
+  "employee_id": "shunleyee",
+  "role_id": "manager"
+}
+
+###
+POST http://localhost:3000/auth/signin
+Content-Type: application/json
+
+{
+  "password": "shunn",
+  "employee_id": "shunnnn"
+}
