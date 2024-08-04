@@ -12,7 +12,7 @@ RETURNING *;
 
 -- name: DeleteMenuItem :one
 UPDATE menu_items
-SET deleted_at = NOW()
+SET deleted_at = NOW() AT TIME ZONE 'utc'
 WHERE id = $1
 RETURNING *;
 

@@ -12,20 +12,29 @@ Content-Type: application/json
 ### create others
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6InNodW5ubm4iLCJlbXBsb3llZV9yb2xlIjoiYWRtaW4iLCJpc3MiOiJHbyBSZXN0YXVyZW50Iiwic3ViIjoiand0IiwiYXVkIjpbImFkbWluIiwidXNlciJdLCJleHAiOjE3MjI3OTI3NzgsImlhdCI6MTcyMjcwNjM3OH0.8E0AteIfSgOpvjSmMPfWTn9b0uSBNCRC84X3HBFSHVM
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6InNodW5ubGV5ZWUiLCJlbXBsb3llZV9yb2xlIjoibWFuYWdlciIsImlzcyI6IkdvIFJlc3RhdXJlbnQiLCJzdWIiOiJqd3QiLCJhdWQiOlsiYWRtaW4iLCJ1c2VyIl0sImV4cCI6MTcyMjg0NjMwMCwiaWF0IjoxNzIyNzU5OTAwfQ.u-ufi0YMKxxt_HKmg9Jbwqb6j30y250t-zvDTS90KHY
 
 {
-  "name": "shunn",
-  "password": "shunn",
-  "employee_id": "shunleyee",
+  "name": "shunn1",
+  "password": "shunn1",
+  "employee_id": "shunnleyee1",
   "role_id": "manager"
 }
 
-###
+### admin login
 POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
 {
-  "password": "shunn",
-  "employee_id": "shunnnn"
+  "employee_id": "admin",
+  "password": "admin"
+}
+
+### manager login
+POST http://localhost:3000/auth/signin
+Content-Type: application/json
+
+{
+  "employee_id": "shunnleyee",
+  "password": "shunn"
 }

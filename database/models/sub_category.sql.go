@@ -46,7 +46,7 @@ func (q *Queries) CreateSubCategory(ctx context.Context, arg CreateSubCategoryPa
 
 const deleteSubCategory = `-- name: DeleteSubCategory :one
 UPDATE menu_sub_categories
-SET deleted_at = NOW()
+SET deleted_at = NOW() AT TIME ZONE 'utc'
 WHERE id = $1
 RETURNING id, name, img_url, category, created_at, updated_at, deleted_at
 `

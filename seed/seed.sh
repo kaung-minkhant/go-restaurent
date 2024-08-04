@@ -6,4 +6,4 @@ goose postgres postgres://root:root@127.0.0.1:5432/restaurant_management_system?
 done
 goose postgres postgres://root:root@127.0.0.1:5432/restaurant_management_system?sslmode=disable up
 cd ../../seed
-go run seedAdmin.go
+go run seed.go

@@ -12,6 +12,6 @@ RETURNING *;
 
 -- name: DeleteCategory :one
 UPDATE menu_categories
-SET deleted_at = NOW()
+SET deleted_at = NOW() AT TIME ZONE 'utc'
 WHERE id = $1
 RETURNING *;

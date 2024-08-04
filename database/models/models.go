@@ -43,3 +43,40 @@ type MenuSubCategory struct {
 	UpdatedAt time.Time    `json:"updated_at"`
 	DeletedAt sql.NullTime `json:"deleted_at"`
 }
+
+type Permission struct {
+	ID         int32        `json:"id"`
+	Permission string       `json:"permission"`
+	Method     string       `json:"method"`
+	Route      string       `json:"route"`
+	CreatedAt  time.Time    `json:"created_at"`
+	UpdatedAt  time.Time    `json:"updated_at"`
+	DeletedAt  sql.NullTime `json:"deleted_at"`
+}
+
+type Role struct {
+	ID        string       `json:"id"`
+	CreatedAt time.Time    `json:"created_at"`
+	UpdatedAt time.Time    `json:"updated_at"`
+	DeletedAt sql.NullTime `json:"deleted_at"`
+}
+
+type RolePermission struct {
+	ID         int32        `json:"id"`
+	Role       string       `json:"role"`
+	Permission string       `json:"permission"`
+	CreatedAt  time.Time    `json:"created_at"`
+	UpdatedAt  time.Time    `json:"updated_at"`
+	DeletedAt  sql.NullTime `json:"deleted_at"`
+}
+
+type User struct {
+	ID                uuid.UUID    `json:"id"`
+	Name              string       `json:"name"`
+	EncryptedPassword string       `json:"encrypted_password"`
+	Role              string       `json:"role"`
+	CreatedAt         time.Time    `json:"created_at"`
+	UpdatedAt         time.Time    `json:"updated_at"`
+	DeletedAt         sql.NullTime `json:"deleted_at"`
+	EmployeeID        string       `json:"employee_id"`
+}

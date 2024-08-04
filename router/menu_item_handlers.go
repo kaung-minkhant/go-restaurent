@@ -116,3 +116,15 @@ func handleUpdateMenuItem(w http.ResponseWriter, r *http.Request) error {
 	}
 	return writeJson(w, http.StatusAccepted, updatedItem)
 }
+
+func handleGetMenuItemById(w http.ResponseWriter, r *http.Request) error {
+	id, err := getMenuItemIDFromPath(r)
+	if err != nil {
+		return err
+	}
+	menuItem, err := database.Db.GetMenuItemById(r.Context(), id)
+	if err != nil {
+		return err
+	}
+	return writeJson(w, http.StatusOK, menuItem)
+}

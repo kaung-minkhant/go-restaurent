@@ -20,15 +20,25 @@ func InitRouter() *chi.Mux {
 
 	r.Route("/sub_categories", setupSubCategoryRoutes)
 
+	r.Route("/auth", setupAuthRoutes)
+
+	r.Route("/roles", setupRoleRoutes)
+
+	r.Route("/test", setupTestRoutes)
+
 	return r
 }
 
-// todo think about admin routes?
+func setupTestRoutes(r chi.Router) {
+	r.Get("/{id}", makeHandlerFunc(handleGetTest))
+}
+
 func setupMenuItemRoutes(r chi.Router) {
 	r.Get("/", makeHandlerFunc(handleGetAllMenuItems))
-	r.Post("/", makeHandlerFunc(handleCreateMenuItem))
-	r.Delete("/{menuItemId}", makeHandlerFunc(handleDeleteMenuItem))
-	r.Patch("/{menuItemId}", makeHandlerFunc(handleUpdateMenuItem))
+	r.Get("/{menuItemId}", makeHandlerFunc(handleGetMenuItemById))
+	r.With(AuthMiddleware).Post("/", makeHandlerFunc(handleCreateMenuItem))
+	r.With(AuthMiddleware).Delete("/{menuItemId}", makeHandlerFunc(handleDeleteMenuItem))
+	r.With(AuthMiddleware).Patch("/{menuItemId}", makeHandlerFunc(handleUpdateMenuItem))
 }
 
 func setupCategoryRoutes(r chi.Router) {
@@ -44,6 +54,16 @@ func setupSubCategoryRoutes(r chi.Router) {
 	r.Delete("/{subCategoryId}", makeHandlerFunc(handleDeleteSubCategory))
 	r.Patch("/{subCategoryId}", makeHandlerFunc(handleUpdateSubCategory))
 }
+
+func setupRoleRoutes(r chi.Router) {
+	r.With(AuthMiddleware).Post("/", makeHandlerFunc(handleCreateRole))
+}
+
+func setupAuthRoutes(r chi.Router) {
+	r.With(AuthMiddleware).Post("/signup", makeHandlerFunc(handleSignUp))
+	r.Post("/signin", makeHandlerFunc(handleSignIn))
+}
+
 func setupMiddleWares(r *chi.Mux) {
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
