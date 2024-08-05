@@ -2,10 +2,13 @@ package auth
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/kaung-minkhant/go-restaurent/database/models"
+	"github.com/kaung-minkhant/go-restaurent/utils"
 )
 
 type CustomClaims struct {
@@ -14,18 +17,17 @@ type CustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-// TODO: properly store JWT secret
-var secret string = "secret"
-
 func GenerateJWT(user *models.User) (string, error) {
+	secret := os.Getenv("JWT_SECRET")
+	expiryString := os.Getenv("ACC_TOKEN_EXPIRY")
+	expiry, _ := strconv.Atoi(expiryString)
 	claims := &CustomClaims{
 		user.EmployeeID,
 		user.Role,
 		jwt.RegisteredClaims{
 			Issuer:    "Go Restaurent",
 			Subject:   "jwt",
-			Audience:  []string{"admin", "user"},
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 1)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * time.Duration(expiry))),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
@@ -39,9 +41,10 @@ func GenerateJWT(user *models.User) (string, error) {
 }
 
 func ValidateJWT(jwtToken string) (*CustomClaims, error) {
+	secret := os.Getenv("JWT_SECRET")
 	token, err := jwt.ParseWithClaims(jwtToken, &CustomClaims{}, func(t *jwt.Token) (interface{}, error) {
 		if t.Method.Alg() != jwt.SigningMethodHS256.Alg() {
-			return nil, fmt.Errorf("access denied")
+			return nil, utils.ReturnAccessDenied()
 		}
 		return []byte(secret), nil
 	})
@@ -50,15 +53,16 @@ func ValidateJWT(jwtToken string) (*CustomClaims, error) {
 	}
 	claims, ok := token.Claims.(*CustomClaims)
 	if !ok {
-		return nil, fmt.Errorf("access denied")
+		return nil, utils.ReturnAccessDenied()
 	}
 	return claims, nil
 }
 
 func GetClaimsWithoutValidation(jwtToken string) (*CustomClaims, error) {
+	secret := os.Getenv("JWT_SECRET")
 	token, err := jwt.ParseWithClaims(jwtToken, &CustomClaims{}, func(t *jwt.Token) (interface{}, error) {
 		if t.Method.Alg() != jwt.SigningMethodHS256.Alg() {
-			return nil, fmt.Errorf("access denied")
+			return nil, utils.ReturnAccessDenied()
 		}
 		return []byte(secret), nil
 	}, jwt.WithoutClaimsValidation())
@@ -67,7 +71,7 @@ func GetClaimsWithoutValidation(jwtToken string) (*CustomClaims, error) {
 	}
 	claims, ok := token.Claims.(*CustomClaims)
 	if !ok {
-		return nil, fmt.Errorf("access denied")
+		return nil, utils.ReturnAccessDenied()
 	}
 	return claims, nil
 

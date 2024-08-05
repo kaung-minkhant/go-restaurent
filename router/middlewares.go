@@ -7,10 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/kaung-minkhant/go-restaurent/auth"
 	"github.com/kaung-minkhant/go-restaurent/database"
-	"github.com/kaung-minkhant/go-restaurent/database/models"
 )
 
 type ApiHandlerFunc func(w http.ResponseWriter, r *http.Request) error
@@ -78,7 +76,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func ValidateRolePermission(next http.Handler) http.Handler {
+func ValidateRolePermissionMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		permission, err := getPermission(r)
 		if err != nil {
@@ -103,20 +101,4 @@ func ValidateRolePermission(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
-}
-
-func getPermission(r *http.Request) (models.Permission, error) {
-	routePattern := getRoutePattern(r)
-	return database.Db.GetPermissionByMethodAndRoute(r.Context(), models.GetPermissionByMethodAndRouteParams{
-		Method: r.Method,
-		Route:  routePattern,
-	})
-}
-
-func getRoutePattern(r *http.Request) string {
-	return chi.RouteContext(r.Context()).RoutePattern()
-}
-
-func getRoleFromPermission(r *http.Request, permission models.Permission) (models.RolePermission, error) {
-	return database.Db.GetRoleByPermissionName(r.Context(), permission.Permission)
 }

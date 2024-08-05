@@ -21,15 +21,6 @@ type CreateMenuItemParams struct {
 	SubCategory uuid.NullUUID `json:"sub_category"`
 }
 
-func writeJson(w http.ResponseWriter, status int, v interface{}) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	if err := json.NewEncoder(w).Encode(v); err != nil {
-		return err
-	}
-	return nil
-}
-
 func getMenuItemIDFromPath(r *http.Request) (uuid.UUID, error) {
 	idString := chi.URLParam(r, "menuItemId")
 	if idString == "" {

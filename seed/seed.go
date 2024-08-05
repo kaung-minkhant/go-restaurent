@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"github.com/kaung-minkhant/go-restaurent/database"
 	"github.com/kaung-minkhant/go-restaurent/database/models"
 	"github.com/kaung-minkhant/go-restaurent/seed/seedobjects"
@@ -12,7 +13,7 @@ import (
 )
 
 func main() {
-
+	godotenv.Load("../.env")
 	database.ConnectToDb()
 	// create role
 	for _, role := range seedobjects.RolesToCreate {

@@ -2,7 +2,6 @@ package router
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -22,9 +21,22 @@ func SomethingWentWrongResponse(w http.ResponseWriter) {
 	})
 }
 
-func ReturnAccessDenied() error {
-	return fmt.Errorf("access denied")
+func writeJson(w http.ResponseWriter, status int, v interface{}) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	if err := json.NewEncoder(w).Encode(v); err != nil {
+		return err
+	}
+	return nil
 }
-func ReturnSomethingWentWrong() error {
-	return fmt.Errorf("something went wrong")
+
+func writeError(w http.ResponseWriter, status int, message string) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	if err := json.NewEncoder(w).Encode(&ApiError{
+		Error: message,
+	}); err != nil {
+		return err
+	}
+	return nil
 }
