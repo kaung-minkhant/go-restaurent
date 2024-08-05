@@ -56,12 +56,13 @@ func setupSubCategoryRoutes(r chi.Router) {
 }
 
 func setupRoleRoutes(r chi.Router) {
-	r.With(AuthMiddleware).Post("/", makeHandlerFunc(handleCreateRole))
+	r.With(AuthMiddleware).With(ValidateRolePermission).Post("/", makeHandlerFunc(handleCreateRole))
 }
 
 func setupAuthRoutes(r chi.Router) {
-	r.With(AuthMiddleware).Post("/signup", makeHandlerFunc(handleSignUp))
+	r.With(AuthMiddleware).With(ValidateRolePermission).Post("/signup", makeHandlerFunc(handleSignUp))
 	r.Post("/signin", makeHandlerFunc(handleSignIn))
+	r.With(AuthMiddleware).Get("/refresh", makeHandlerFunc(handleRefreshToken))
 }
 
 func setupMiddleWares(r *chi.Mux) {

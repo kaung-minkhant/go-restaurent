@@ -17,7 +17,7 @@ type CustomClaims struct {
 // TODO: properly store JWT secret
 var secret string = "secret"
 
-func GenerateJWT(user models.User) (string, error) {
+func GenerateJWT(user *models.User) (string, error) {
 	claims := &CustomClaims{
 		user.EmployeeID,
 		user.Role,
@@ -25,7 +25,7 @@ func GenerateJWT(user models.User) (string, error) {
 			Issuer:    "Go Restaurent",
 			Subject:   "jwt",
 			Audience:  []string{"admin", "user"},
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 1)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
@@ -53,4 +53,22 @@ func ValidateJWT(jwtToken string) (*CustomClaims, error) {
 		return nil, fmt.Errorf("access denied")
 	}
 	return claims, nil
+}
+
+func GetClaimsWithoutValidation(jwtToken string) (*CustomClaims, error) {
+	token, err := jwt.ParseWithClaims(jwtToken, &CustomClaims{}, func(t *jwt.Token) (interface{}, error) {
+		if t.Method.Alg() != jwt.SigningMethodHS256.Alg() {
+			return nil, fmt.Errorf("access denied")
+		}
+		return []byte(secret), nil
+	}, jwt.WithoutClaimsValidation())
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(*CustomClaims)
+	if !ok {
+		return nil, fmt.Errorf("access denied")
+	}
+	return claims, nil
+
 }

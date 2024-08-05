@@ -11,6 +11,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type AuthToken struct {
+	ID           uuid.UUID `json:"id"`
+	RefreshToken string    `json:"refresh_token"`
+	Session      uuid.UUID `json:"session"`
+	AccessToken  string    `json:"access_token"`
+	Valid        bool      `json:"valid"`
+}
+
 type MenuCategory struct {
 	ID        uuid.UUID    `json:"id"`
 	Name      string       `json:"name"`

@@ -12,7 +12,8 @@ Content-Type: application/json
 ### create others
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6InNodW5ubGV5ZWUiLCJlbXBsb3llZV9yb2xlIjoibWFuYWdlciIsImlzcyI6IkdvIFJlc3RhdXJlbnQiLCJzdWIiOiJqd3QiLCJhdWQiOlsiYWRtaW4iLCJ1c2VyIl0sImV4cCI6MTcyMjg0NjMwMCwiaWF0IjoxNzIyNzU5OTAwfQ.u-ufi0YMKxxt_HKmg9Jbwqb6j30y250t-zvDTS90KHY
+Set-Cookie: refresh-token=IKYGAxr4NuGmAlgX90GEvbnYn; HttpOnly
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6ImFkbWluIiwiZW1wbG95ZWVfcm9sZSI6ImFkbWluIiwiaXNzIjoiR28gUmVzdGF1cmVudCIsInN1YiI6Imp3dCIsImF1ZCI6WyJhZG1pbiIsInVzZXIiXSwiZXhwIjoxNzIyODQwMTQ1LCJpYXQiOjE3MjI4NDAwODV9.twDGRkqZ3On6WDadBgLMwGTgFfwHrvZscYFvCyLgYos
 
 {
   "name": "shunn1",
@@ -38,3 +39,10 @@ Content-Type: application/json
   "employee_id": "shunnleyee",
   "password": "shunn"
 }
+
+
+### refresh token
+GET http://localhost:3000/auth/refresh
+Set-Cookie: refresh-token=HMGzBajAVF3x8G5FahOzSIVQU; HttpOnly
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6ImFkbWluIiwiZW1wbG95ZWVfcm9sZSI6ImFkbWluIiwiaXNzIjoiR28gUmVzdGF1cmVudCIsInN1YiI6Imp3dCIsImF1ZCI6WyJhZG1pbiIsInVzZXIiXSwiZXhwIjoxNzIyODQxNjQ0LCJpYXQiOjE3MjI4NDE1ODR9.Wz9RWxAilpBD3pCQFZp0OOXUH2G3N6F-TRpUkImdt7I
+
