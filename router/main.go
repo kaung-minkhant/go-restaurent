@@ -36,9 +36,9 @@ func setupTestRoutes(r chi.Router) {
 func setupMenuItemRoutes(r chi.Router) {
 	r.Get("/", makeHandlerFunc(handleGetAllMenuItems))
 	r.Get("/{menuItemId}", makeHandlerFunc(handleGetMenuItemById))
-	r.With(AuthMiddleware).Post("/", makeHandlerFunc(handleCreateMenuItem))
-	r.With(AuthMiddleware).Delete("/{menuItemId}", makeHandlerFunc(handleDeleteMenuItem))
-	r.With(AuthMiddleware).Patch("/{menuItemId}", makeHandlerFunc(handleUpdateMenuItem))
+	r.With(AuthWithRolePermission...).Post("/", makeHandlerFunc(handleCreateMenuItem))
+	r.With(AuthWithRolePermission...).Delete("/{menuItemId}", makeHandlerFunc(handleDeleteMenuItem))
+	r.With(AuthWithRolePermission...).Patch("/{menuItemId}", makeHandlerFunc(handleUpdateMenuItem))
 }
 
 func setupCategoryRoutes(r chi.Router) {
@@ -56,13 +56,14 @@ func setupSubCategoryRoutes(r chi.Router) {
 }
 
 func setupRoleRoutes(r chi.Router) {
-	r.With(AuthMiddleware).With(ValidateRolePermissionMiddleware).Post("/", makeHandlerFunc(handleCreateRole))
+	r.With(AuthWithRolePermission...).Post("/", makeHandlerFunc(handleCreateRole))
 }
 
 func setupAuthRoutes(r chi.Router) {
 	r.Post("/signin", makeHandlerFunc(handleSignIn))
 	r.With(AuthMiddleware).Get("/refresh", makeHandlerFunc(handleRefreshToken))
-	r.With(AuthMiddleware).With(ValidateRolePermissionMiddleware).Post("/signup", makeHandlerFunc(handleSignUp))
+	// r.With(AuthMiddleware, RolePermissionMiddleware).With(RolePermissionMiddleware).Post("/signup", makeHandlerFunc(handleSignUp))
+	r.With(AuthWithRolePermission...).Post("/signup", makeHandlerFunc(handleSignUp))
 	r.With(AuthMiddleware).Get("/logout", makeHandlerFunc(handleLogout))
 }
 

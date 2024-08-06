@@ -7,11 +7,14 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/kaung-minkhant/go-restaurent/auth"
 	"github.com/kaung-minkhant/go-restaurent/database"
 )
 
 type ApiHandlerFunc func(w http.ResponseWriter, r *http.Request) error
+
+type middlewareFunc func(http.Handler) http.Handler
 
 type ApiError struct {
 	Error string `json:"error"`
@@ -31,6 +34,7 @@ func makeHandlerFunc(handler ApiHandlerFunc) http.HandlerFunc {
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("In auth middleware")
 		token := r.Header.Get("x-access-token")
 		if token == "" {
 			AccessDeniedResponse(w)
@@ -82,7 +86,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func ValidateRolePermissionMiddleware(next http.Handler) http.Handler {
+func RolePermissionMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		permission, err := getPermission(r)
 		if err != nil {
@@ -108,3 +112,5 @@ func ValidateRolePermissionMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+var AuthWithRolePermission = chi.Chain(AuthMiddleware, RolePermissionMiddleware)
