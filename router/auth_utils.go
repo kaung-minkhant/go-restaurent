@@ -13,20 +13,11 @@ import (
 	"github.com/kaung-minkhant/go-restaurent/utils"
 )
 
-func invalidateTokenFamily(r *http.Request, session uuid.UUID) error {
-	return database.Db.InvalidateTokenFamily(r.Context(), session)
-}
-
-func setRefreshToken(w http.ResponseWriter, refreshToken string) {
-	http.SetCookie(w, &http.Cookie{
-		Name:     "refresh-token",
-		Value:    refreshToken,
-		HttpOnly: true,
-	})
+func invalidateTokenFamily(r *http.Request, arg models.InvalidateTokenFamilyParams) error {
+	return database.Db.InvalidateTokenFamily(r.Context(), arg)
 }
 
 func refreshAccessToken(r *http.Request, oldRefreshToken string, oldAccessToken string) (newAccToken string, newRefToken string, err error) {
-	fmt.Println("RefreshToken", oldRefreshToken, "oldAccessToken", oldAccessToken)
 	tokens, err := database.Db.GetAuthByTokens(r.Context(), models.GetAuthByTokensParams{
 		RefreshToken: oldRefreshToken,
 		AccessToken:  oldAccessToken,
@@ -37,7 +28,10 @@ func refreshAccessToken(r *http.Request, oldRefreshToken string, oldAccessToken 
 	}
 	if !tokens.Valid {
 		fmt.Println("Token invalid")
-		if err := invalidateTokenFamily(r, tokens.Session); err != nil {
+		if err := invalidateTokenFamily(r, models.InvalidateTokenFamilyParams{
+			AccessToken:  oldAccessToken,
+			RefreshToken: oldRefreshToken,
+		}); err != nil {
 			fmt.Println("Cannot invalidate tokens", err)
 		}
 		return "", "", utils.ReturnAccessDenied()

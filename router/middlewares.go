@@ -36,9 +36,14 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			AccessDeniedResponse(w)
 			return
 		}
+		var err error
+		refreshToken, err := getRefreshTokenFromCookie(r)
+		if err != nil {
+			AccessDeniedResponse(w)
+			return
+		}
 
 		var claims *auth.CustomClaims
-		var err error
 		claims, err = auth.ValidateJWT(token)
 		if err != nil {
 			if strings.Contains(err.Error(), "token is expired") {
@@ -72,6 +77,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "ctx-user", &user)
 		ctx = context.WithValue(ctx, "ctx-claims", claims)
 		ctx = context.WithValue(ctx, "ctx-access-token", token)
+		ctx = context.WithValue(ctx, "ctx-refresh-token", refreshToken)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

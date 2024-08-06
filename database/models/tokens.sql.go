@@ -13,8 +13,7 @@ import (
 
 const createTokens = `-- name: CreateTokens :one
 INSERT INTO auth.tokens (id, access_token, refresh_token, session, valid)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, refresh_token, session, access_token, valid
+VALUES ($1, $2, $3, $4, $5) RETURNING id, refresh_token, session, access_token, valid
 `
 
 type CreateTokensParams struct {
@@ -93,11 +92,40 @@ func (q *Queries) InvalidateToken(ctx context.Context, arg InvalidateTokenParams
 }
 
 const invalidateTokenFamily = `-- name: InvalidateTokenFamily :exec
-DELETE FROM auth.tokens
-WHERE session = $1
+UPDATE auth.tokens
+SET valid = FALSE
+WHERE session IN (
+  SELECT session FROM auth.tokens token
+  WHERE token.access_token = $1 AND token.refresh_token = $2
+) AND valid = TRUE
 `
 
-func (q *Queries) InvalidateTokenFamily(ctx context.Context, session uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, invalidateTokenFamily, session)
+type InvalidateTokenFamilyParams struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+// TODO: Change invalidation to setting all to invalid, then when user try to refresh the token, if his current one is invalidated, then someone has used old tokens to request new token
+func (q *Queries) InvalidateTokenFamily(ctx context.Context, arg InvalidateTokenFamilyParams) error {
+	_, err := q.db.ExecContext(ctx, invalidateTokenFamily, arg.AccessToken, arg.RefreshToken)
+	return err
+}
+
+const logoutTokens = `-- name: LogoutTokens :exec
+DELETE FROM auth.tokens
+WHERE session IN 
+( 
+  SELECT session FROM auth.tokens tokens
+  WHERE tokens.access_token = $1 AND tokens.refresh_token = $2
+)
+`
+
+type LogoutTokensParams struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+func (q *Queries) LogoutTokens(ctx context.Context, arg LogoutTokensParams) error {
+	_, err := q.db.ExecContext(ctx, logoutTokens, arg.AccessToken, arg.RefreshToken)
 	return err
 }

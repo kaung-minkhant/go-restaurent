@@ -63,6 +63,7 @@ func setupAuthRoutes(r chi.Router) {
 	r.Post("/signin", makeHandlerFunc(handleSignIn))
 	r.With(AuthMiddleware).Get("/refresh", makeHandlerFunc(handleRefreshToken))
 	r.With(AuthMiddleware).With(ValidateRolePermissionMiddleware).Post("/signup", makeHandlerFunc(handleSignUp))
+	r.With(AuthMiddleware).Get("/logout", makeHandlerFunc(handleLogout))
 }
 
 func setupMiddleWares(r *chi.Mux) {

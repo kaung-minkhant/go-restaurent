@@ -77,12 +77,12 @@ func handleSignIn(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return utils.ReturnAccessDenied()
 	}
-	setRefreshToken(w, refreshToken)
+	setRefreshTokenCookie(w, refreshToken)
 	return writeJson(w, http.StatusOK, SignInResponse{AccessToken: jwt})
 }
 
 func handleRefreshToken(w http.ResponseWriter, r *http.Request) error {
-	refreshToken, err := r.Cookie("refresh-token")
+	refreshToken, err := getRefreshTokenFromContext(r)
 	if err != nil {
 		fmt.Println("Refresh token not found")
 		return utils.ReturnAccessDenied()
@@ -92,10 +92,30 @@ func handleRefreshToken(w http.ResponseWriter, r *http.Request) error {
 		fmt.Println("Access token not found")
 		return err
 	}
-	jwt, newRefreshToken, err := refreshAccessToken(r, refreshToken.Value, accToken)
+	jwt, newRefreshToken, err := refreshAccessToken(r, refreshToken, accToken)
+	if err != nil {
+		return writeError(w, http.StatusUnauthorized, err.Error())
+	}
+	setRefreshTokenCookie(w, newRefreshToken)
+	return writeJson(w, http.StatusOK, SignInResponse{AccessToken: jwt})
+}
+
+func handleLogout(w http.ResponseWriter, r *http.Request) error {
+	accToken, err := getAccessTokenFromContext(r)
+	if err != nil {
+		return utils.ReturnAccessDenied()
+	}
+	refreshToken, err := getRefreshTokenFromContext(r)
+	if err != nil {
+		return utils.ReturnAccessDenied()
+	}
+	err = database.Db.LogoutTokens(r.Context(), models.LogoutTokensParams{
+		AccessToken:  accToken,
+		RefreshToken: refreshToken,
+	})
 	if err != nil {
 		return err
 	}
-	setRefreshToken(w, newRefreshToken)
-	return writeJson(w, http.StatusOK, SignInResponse{AccessToken: jwt})
+	return writeJson(w, http.StatusOK, "OK")
+
 }

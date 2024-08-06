@@ -12,8 +12,8 @@ Content-Type: application/json
 ### create others
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
-Set-Cookie: refresh-token=IKYGAxr4NuGmAlgX90GEvbnYn; HttpOnly
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6ImFkbWluIiwiZW1wbG95ZWVfcm9sZSI6ImFkbWluIiwiaXNzIjoiR28gUmVzdGF1cmVudCIsInN1YiI6Imp3dCIsImF1ZCI6WyJhZG1pbiIsInVzZXIiXSwiZXhwIjoxNzIyODQwMTQ1LCJpYXQiOjE3MjI4NDAwODV9.twDGRkqZ3On6WDadBgLMwGTgFfwHrvZscYFvCyLgYos
+Cookie: refresh-token=mj71VpU76j07W9kVOt5MeoiD8; HttpOnly
+Cookie: refresh-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6ImFkbWluIiwiZW1wbG95ZWVfcm9sZSI6ImFkbWluIiwiaXNzIjoiR28gUmVzdGF1cmVudCIsInN1YiI6Imp3dCIsImV4cCI6MTcyMjg3ODU3OSwiaWF0IjoxNzIyODc4NTE5fQ.1Bco-7r2MMfkSFNriWZmP7-TqJibeT1AO6LOfbseg5Q
 
 {
   "name": "shunn1",
@@ -31,6 +31,11 @@ Content-Type: application/json
   "password": "admin"
 }
 
+### logout
+GET http://localhost:3000/auth/logout
+Cookie: refresh-token=6EbKw0t9dxCbogahY0ISdHOZw; HttpOnly
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6ImFkbWluIiwiZW1wbG95ZWVfcm9sZSI6ImFkbWluIiwiaXNzIjoiR28gUmVzdGF1cmVudCIsInN1YiI6Imp3dCIsImV4cCI6MTcyMjkwNTgyMSwiaWF0IjoxNzIyOTA1NzYxfQ.UrWaIl8YYLb2-eM5ut8EfOAIn1dtT_wwTHx7nAXWo3I
+
 ### manager login
 POST http://localhost:3000/auth/signin
 Content-Type: application/json
@@ -43,6 +48,7 @@ Content-Type: application/json
 
 ### refresh token
 GET http://localhost:3000/auth/refresh
-Cookie: refresh-token=ltgymVucbxbSOuX87skC2MDlo; HttpOnly
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6ImFkbWluIiwiZW1wbG95ZWVfcm9sZSI6ImFkbWluIiwiaXNzIjoiR28gUmVzdGF1cmVudCIsInN1YiI6Imp3dCIsImF1ZCI6WyJhZG1pbiIsInVzZXIiXSwiZXhwIjoxNzIyODYyMTQ5LCJpYXQiOjE3MjI4NjIwODl9.pPxwbSpxTTaS0Mrm-Vrasneu7QJZ7EFEJJaQwxq7Ahg
+Cookie: 6EbKw0t9dxCbogahY0ISdHOZw; HttpOnly
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZV9pZCI6ImFkbWluIiwiZW1wbG95ZWVfcm9sZSI6ImFkbWluIiwiaXNzIjoiR28gUmVzdGF1cmVudCIsInN1YiI6Imp3dCIsImV4cCI6MTcyMjkwNTgyMSwiaWF0IjoxNzIyOTA1NzYxfQ.UrWaIl8YYLb2-eM5ut8EfOAIn1dtT_wwTHx7nAXWo3I
+
 

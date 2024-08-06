@@ -31,5 +31,12 @@ func getClaimsFromContext(r *http.Request) (*auth.CustomClaims, error) {
 		return nil, utils.ReturnAccessDenied()
 	}
 	return claims, nil
+}
 
+func getRefreshTokenFromContext(r *http.Request) (string, error) {
+	refToken := r.Context().Value("ctx-refresh-token").(string)
+	if refToken == "" {
+		return "", utils.ReturnAccessDenied()
+	}
+	return refToken, nil
 }
