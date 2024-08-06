@@ -8,8 +8,15 @@ import (
 	"github.com/kaung-minkhant/go-restaurent/utils"
 )
 
+type contextKey string
+
+var ctxUserKey = contextKey("ctx-user")
+var ctxClaimsKey = contextKey("ctx-claims")
+var ctxAccTokenKey = contextKey("ctx-access-token")
+var ctxRefTokenKey = contextKey("ctx-refresh-token")
+
 func getUserFromContext(r *http.Request) (*models.User, error) {
-	user, ok := r.Context().Value("ctx-user").(*models.User)
+	user, ok := r.Context().Value(ctxUserKey).(*models.User)
 	if !ok {
 		return nil, utils.ReturnAccessDenied()
 	}
@@ -17,7 +24,7 @@ func getUserFromContext(r *http.Request) (*models.User, error) {
 }
 
 func getAccessTokenFromContext(r *http.Request) (string, error) {
-	accToken := r.Context().Value("ctx-access-token").(string)
+	accToken := r.Context().Value(ctxAccTokenKey).(string)
 	if accToken == "" {
 		return "", utils.ReturnAccessDenied()
 	}
@@ -26,7 +33,7 @@ func getAccessTokenFromContext(r *http.Request) (string, error) {
 }
 
 func getClaimsFromContext(r *http.Request) (*auth.CustomClaims, error) {
-	claims := r.Context().Value("ctx-claims").(*auth.CustomClaims)
+	claims := r.Context().Value(ctxClaimsKey).(*auth.CustomClaims)
 	if claims == nil {
 		return nil, utils.ReturnAccessDenied()
 	}
@@ -34,7 +41,7 @@ func getClaimsFromContext(r *http.Request) (*auth.CustomClaims, error) {
 }
 
 func getRefreshTokenFromContext(r *http.Request) (string, error) {
-	refToken := r.Context().Value("ctx-refresh-token").(string)
+	refToken := r.Context().Value(ctxRefTokenKey).(string)
 	if refToken == "" {
 		return "", utils.ReturnAccessDenied()
 	}

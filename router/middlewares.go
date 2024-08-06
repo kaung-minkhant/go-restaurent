@@ -78,10 +78,10 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "ctx-user", &user)
-		ctx = context.WithValue(ctx, "ctx-claims", claims)
-		ctx = context.WithValue(ctx, "ctx-access-token", token)
-		ctx = context.WithValue(ctx, "ctx-refresh-token", refreshToken)
+		ctx := context.WithValue(r.Context(), ctxUserKey, &user)
+		ctx = context.WithValue(ctx, ctxClaimsKey, claims)
+		ctx = context.WithValue(ctx, ctxAccTokenKey, token)
+		ctx = context.WithValue(ctx, ctxRefTokenKey, refreshToken)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
