@@ -14,8 +14,6 @@ import (
 
 type ApiHandlerFunc func(w http.ResponseWriter, r *http.Request) error
 
-type middlewareFunc func(http.Handler) http.Handler
-
 type ApiError struct {
 	Error string `json:"error"`
 }
@@ -41,7 +39,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		var err error
-		refreshToken, err := getRefreshTokenFromCookie(r)
+		refToken, err := getRefreshTokenFromContext(r)
 		if err != nil {
 			AccessDeniedResponse(w)
 			return
@@ -81,7 +79,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), ctxUserKey, &user)
 		ctx = context.WithValue(ctx, ctxClaimsKey, claims)
 		ctx = context.WithValue(ctx, ctxAccTokenKey, token)
-		ctx = context.WithValue(ctx, ctxRefTokenKey, refreshToken)
+		ctx = context.WithValue(ctx, ctxRefTokenKey, refToken)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

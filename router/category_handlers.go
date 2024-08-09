@@ -1,7 +1,6 @@
 package router
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -14,14 +13,6 @@ import (
 type CreateCategoryParams struct {
 	Name   string `json:"name"`
 	ImgUrl string `json:"img_url"`
-}
-
-func getRequestBody[T any](r *http.Request) (*T, error) {
-	var body T
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		return nil, err
-	}
-	return &body, nil
 }
 
 func getCategoryIdFromParam(r *http.Request) (uuid.UUID, error) {

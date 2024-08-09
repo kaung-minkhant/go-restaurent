@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha256"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -13,8 +16,38 @@ import (
 )
 
 func main() {
+	// generateKey()
+	// signature, err := rsa.SignPSS(rand.Reader)
 	godotenv.Load("../.env")
 	database.ConnectToDb()
+	seed()
+	fmt.Println("Seeding successful")
+}
+
+func sign() {
+	msg := []byte("test message")
+
+	msgHash := sha256.New()
+	_, err := msgHash.Write(msg)
+	if err != nil {
+		panic(err)
+	}
+	msgHashSum := msgHash.Sum(nil)
+	fmt.Println("message sum:", msgHashSum)
+}
+
+func generateKey() {
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		panic(err)
+	}
+
+	// The public key is a part of the *rsa.PrivateKey struct
+	publicKey := privateKey.PublicKey
+	fmt.Printf("Public key: %v - Private key: %x\n", publicKey, privateKey.D.Bytes())
+}
+
+func seed() {
 	// create role
 	for _, role := range seedobjects.RolesToCreate {
 		_, err := database.Db.CreateRole(context.Background(), role)
@@ -71,5 +104,4 @@ func main() {
 			return
 		}
 	}
-	fmt.Println("Seeding successful")
 }

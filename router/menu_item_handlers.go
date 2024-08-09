@@ -73,17 +73,17 @@ func handleDeleteMenuItem(w http.ResponseWriter, r *http.Request) error {
 	return writeJson(w, http.StatusAccepted, deletedItem)
 }
 
-func handleHardDeleteMenuItem(w http.ResponseWriter, r *http.Request) error {
-	menuId, err := getMenuItemIDFromPath(r)
-	if err != nil {
-		return err
-	}
-	deletedItem, err := database.Db.HardDeleteMenuItem(r.Context(), menuId)
-	if err != nil {
-		return err
-	}
-	return writeJson(w, http.StatusAccepted, deletedItem)
-}
+// func handleHardDeleteMenuItem(w http.ResponseWriter, r *http.Request) error {
+// 	menuId, err := getMenuItemIDFromPath(r)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	deletedItem, err := database.Db.HardDeleteMenuItem(r.Context(), menuId)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return writeJson(w, http.StatusAccepted, deletedItem)
+// }
 
 func handleUpdateMenuItem(w http.ResponseWriter, r *http.Request) error {
 	menuItemId, err := getMenuItemIDFromPath(r)

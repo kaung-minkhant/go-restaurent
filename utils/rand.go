@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-var seededRand *rand.Rand = rand.New(
+var SeededRand *rand.Rand = rand.New(
 	rand.NewSource(time.Now().UnixNano()),
 )
 
@@ -14,7 +14,7 @@ var charSet string = "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 func RandString(length int) string {
 	b := make([]byte, length)
 	for i := range b {
-		b[i] = charSet[seededRand.Intn(len(charSet))]
+		b[i] = charSet[SeededRand.Intn(len(charSet))]
 	}
 	return string(b)
 }

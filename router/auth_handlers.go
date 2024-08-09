@@ -23,6 +23,11 @@ type SignInParams struct {
 	Password   string `json:"password"`
 }
 
+type VerifyParams struct {
+	Data      string `json:"data"`
+	Signature string `json:"sign"`
+}
+
 type SignInResponse struct {
 	AccessToken string `json:"access_token"`
 }
@@ -77,7 +82,10 @@ func handleSignIn(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return utils.ReturnAccessDenied()
 	}
-	setRefreshTokenCookie(w, refreshToken)
+	setDataCookie(w, &cookieData{
+		RefToken: refreshToken,
+		Role:     user.Role,
+	})
 	return writeJson(w, http.StatusOK, SignInResponse{AccessToken: jwt})
 }
 
@@ -96,7 +104,14 @@ func handleRefreshToken(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return writeError(w, http.StatusUnauthorized, err.Error())
 	}
-	setRefreshTokenCookie(w, newRefreshToken)
+	user, err := getUserFromContext(r)
+	if err != nil {
+		return err
+	}
+	setDataCookie(w, &cookieData{
+		RefToken: newRefreshToken,
+		Role:     user.Role,
+	})
 	return writeJson(w, http.StatusOK, SignInResponse{AccessToken: jwt})
 }
 
@@ -117,5 +132,16 @@ func handleLogout(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	return writeJson(w, http.StatusOK, "OK")
+}
 
+func handleVerify(w http.ResponseWriter, r *http.Request) error {
+	params, err := getRequestBody[VerifyParams](r)
+	if err != nil {
+		return err
+	}
+	err = utils.VerifySign([]byte(params.Data), params.Signature, nil)
+	if err != nil {
+		return writeError(w, http.StatusUnauthorized, utils.ReturnAccessDenied().Error())
+	}
+	return writeJson(w, http.StatusOK, "ok")
 }

@@ -61,6 +61,7 @@ func setupRoleRoutes(r chi.Router) {
 
 func setupAuthRoutes(r chi.Router) {
 	r.Post("/signin", makeHandlerFunc(handleSignIn))
+	r.Post("/verify", makeHandlerFunc(handleVerify))
 	r.With(AuthMiddleware).Get("/refresh", makeHandlerFunc(handleRefreshToken))
 	// r.With(AuthMiddleware, RolePermissionMiddleware).With(RolePermissionMiddleware).Post("/signup", makeHandlerFunc(handleSignUp))
 	r.With(AuthWithRolePermission...).Post("/signup", makeHandlerFunc(handleSignUp))
